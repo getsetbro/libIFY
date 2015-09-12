@@ -1,0 +1,79 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <h1>header</h1>
+  <script src="//code.jquery.com/jquery-latest.min.js"></script>
+
+<script>
+(function() {
+    var el = document.createElement("div"),
+        b = document.getElementsByTagName("body")[0];
+    el.style.position = "fixed",
+    el.style.height = "32px",
+    el.style.marginLeft = "-110px",
+    el.style.top = "0",
+    el.style.left = "50%",
+    el.style.padding = "5px 10px",
+    el.style.zIndex = 1001,
+    el.style.fontSize = "12px",
+    el.style.color = "#222",
+    el.style.backgroundColor = "#f99";
+
+    function getScript(url, success) {
+      var head = document.getElementsByTagName("head")[0];
+
+      if( url.substr( url.lastIndexOf('.') + 1) === "css" ){
+        var link = document.createElement("link");
+        link.href = url;
+        link.rel = "stylesheet";
+        link.onload = link.onreadystatechange = function() {
+          success();
+        },
+        head.appendChild(link);
+      }else{
+        var script = document.createElement("script");
+        script.src = url;
+        script.onload = script.onreadystatechange = function() {
+          success();
+        },
+        head.appendChild(script);
+      }
+    }
+
+    function showMsg(opts) {
+        var slct = document.createElement("select");
+        $(slct).on('change',function(i,e) {
+            getScript(this.value, function(){
+              return console.log('done');
+            });
+        }).append(opts);
+        el.appendChild(slct);
+        b.appendChild(el);
+    }
+
+    $.get("http://api.cdnjs.com/libraries").done(function(d){
+      var arr = d.results.map(function(b){
+        return '<option label="'+b.name+'" value="'+b.latest+'">' + b.name + '</option>';
+      });
+      arr.sort();
+
+      showMsg( arr.join("") );
+    });
+})();
+
+// (function(){
+// function getCSS(url){
+//   var css = document.createElement("link");
+//   css.href = url;
+//   css.rel="stylesheet";
+//   var head = document.getElementsByTagName("head")[0];
+//   head.appendChild(css);
+// }
+// getCSS(window.prompt("CSS Link","https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"));
+// })();
+</script>
+</body>
+</html>
