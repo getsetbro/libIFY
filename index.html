@@ -4,25 +4,46 @@
     <meta charset="UTF-8">
     <title>Libify by getsetbro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style></style>
+    <style>
+      body{
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 12px;
+        line-height: 1.42857143;
+        color: #333;
+        background-color: #fff;
+        margin: 22px 55px;
+        text-align: center;
+      }
+      ol{display: inline-block; background-color: #eee;list-style-position: inside;margin: 0;padding: 9px}
+      li{text-align: left;border-radius: 0 2em 2em 0;padding:0}
+      li:hover{background-color: #ddd;list-style-type: upper-roman;list-style-position: outside;}
+      li:hover small a{background-color: #eee;color: #333}
+      li p{visibility: hidden;max-width: 55vw;background-color: #eee;height: 11px;border-radius: 0 2em 2em 0;margin:0 9px 0 0 }
+      li:hover p{visibility: visible; height: auto;}
+      label{font-weight: bold;font-size: 14px}
+      a{text-decoration: none;padding-right: 10px;border-radius: 0 2em 2em 0}
+      label a{color:#333}
+      small, small a{color:#555}
+    </style>
   </head>
   <body>
-  <select id="library"></select>
-  <section></section>
-  <script src="//code.jquery.com/jquery-latest.min.js"></script>
-  <script>
-  $('#library').on('change', function(el){
-    $('section').text(this.value);
-  });
-  $.get("http://api.cdnjs.com/libraries").done(
-    function(d){
-      var arr = d.results.map(function(b){
-        return '<option label="'+b.name+'" value="'+b.latest+'">' + b.name + '</option>';
-      });
-      arr.sort();
-      $('#library').append(arr.join(''));
-    }
-  );
-  </script>
+    <ol id="ol"></ol>
+    <script src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+    $('#library').on('change', function(el){
+      $('section').text(this.value);
+    });
+    $.get("http://api.cdnjs.com/libraries?fields=homepage,version,description").done(
+      function(d){
+        var arr = d.results.map(function(b){
+          var homepage = b.homepage || "https://cdnjs.com/libraries/"+b.name;
+          var descrip = (b.description) ? $('<textarea/>').text(b.description).html() : 'no description';
+          return '<label title="'+b.name+'"><a title="'+homepage+'" href="'+homepage+'">' + b.name + '</a></label> <small>(' + b.version + ')</small><br><small><a href="'+b.latest+'">' + b.latest + '</a></small><p>' + descrip + '</p>';
+        });
+        arr.sort();
+        $('#ol').append('<li>' + arr.join('</li><li>') + '</li>');
+      }
+    );
+    </script>
   </body>
 </html>
