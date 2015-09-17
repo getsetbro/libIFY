@@ -3,6 +3,7 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <style>
+  select{height: 150px}
   </style>
 </head>
 <body>
@@ -51,24 +52,33 @@
         // inpt.setAttribute("placeholder", "choose a library");
         dl.onchange = function() {
           if(obs[this.value]){
-            $.get("http://api.cdnjs.com/libraries?search="+this.value+"&fields=assets,version").done(
+            $.get("http://api.cdnjs.com/libraries/"+this.value+"?output=human").done(
               function(d2){
+                var btn = document.createElement("button");
+                btn.innerText = "get";
                 var dl2 = document.createElement("select");
                 dl2.setAttribute("multiple", "true");
-                var d3 = d2.results[0].assets[0];
-                var urlstart = d2.results[0].latest.split(d2.results[0].version)[0] + d2.results[0].version;
-                dl2.style.height = d3.files.length * 15;
+                var d3 = d2.assets[0];
+                var urlstart = 'https://cdnjs.cloudflare.com/ajax/libs/' + d2.name + '/' + d2.version + '/';
                 var arr2 = d3.files.map(function(c){
-                  return '<option value="' + urlstart+'/'+c + '">' + urlstart+'/'+c + '</option>';
+                  return '<option value="' + urlstart + c + '">' + urlstart + c + '</option>';
                 });
                 $(dl2).append( arr2.join("") );
-                dl2.onchange = function() {
-                  getScript(this.value, function(){
-                    return console.log('done');
-                  });
+                btn.onclick = function() {
+                  for (var i = 0; i < dl2.length; i++) {
+                    
+                    if(dl2[i].selected){
+                      getScript(dl2[i].value, function(){
+                        return console.log('done');
+                      });
+                    }
+                  };
+
                   el.removeChild(dl2);
+                  el.removeChild(btn);
                 };
                 el.appendChild(dl2);
+                el.appendChild(btn);
               }
             );
           }
