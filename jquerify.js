@@ -37,7 +37,7 @@
         },
         head.appendChild(script);
     }
-    getScript("http://code.jquery.com/jquery.min.js", function() {
+    getScript("https://code.jquery.com/jquery.min.js", function() {
         return typeof jQuery == "undefined" 
         ? msg = "Sorry, but jQuery was not able to load" 
         : (msg = "This page is now jQuerified with v" + jQuery.fn.jquery, otherlib && (msg += " and noConflict(). Use $jq(), not $().") ),
